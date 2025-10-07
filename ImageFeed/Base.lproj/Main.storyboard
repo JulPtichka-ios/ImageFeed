@@ -21,4 +21,109 @@
             </objects>
         </scene>
     </scenes>
+=======
+        <!--ImageList-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController title="ImageList" id="BYZ-38-t0r" customClass="ImagesListViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="ImagesListViewController" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="WEg-ZF-es2">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <color key="backgroundColor" name="YP Black (iOS)"/>
+                                <color key="separatorColor" name="YP Black (iOS)"/>
+                                <color key="sectionIndexTrackingBackgroundColor" name="AccentColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="ImagesListCell" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ImagesListCell" rowHeight="201" id="ZDQ-xS-QHV" customClass="ImagesListCell" customModule="ImageFeed">
+                                        <rect key="frame" x="0.0" y="50" width="393" height="201"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ZDQ-xS-QHV" id="6kW-kI-wzX">
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="201"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="AOg-GN-wdE">
+                                                    <rect key="frame" x="16" y="4" width="361" height="193"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                            <integer key="value" value="16"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                                    </userDefinedRuntimeAttributes>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="11.11.2025" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Rf-kg-Zwf" userLabel="dateLabel">
+                                                    <rect key="frame" x="24" y="173" width="62" height="16"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                    <color key="textColor" name="YP White (iOS)"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sgG-so-2KR" userLabel="likeButton">
+                                                    <rect key="frame" x="309" y="4" width="68" height="44"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="44" id="wLq-BX-qhz"/>
+                                                    </constraints>
+                                                    <state key="normal" title="Button"/>
+                                                    <buttonConfiguration key="configuration" style="plain" image="likeButton"/>
+                                                </button>
+                                            </subviews>
+                                            <color key="backgroundColor" name="YP Black (iOS)"/>
+                                            <constraints>
+                                                <constraint firstAttribute="bottom" secondItem="AOg-GN-wdE" secondAttribute="bottom" constant="4" id="0Wt-xP-iX1"/>
+                                                <constraint firstItem="AOg-GN-wdE" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="7Rf-kg-Zwf" secondAttribute="trailing" constant="8" id="F06-eV-N0Y"/>
+                                                <constraint firstItem="AOg-GN-wdE" firstAttribute="top" secondItem="6kW-kI-wzX" secondAttribute="top" constant="4" id="Lfx-UL-cTb"/>
+                                                <constraint firstItem="7Rf-kg-Zwf" firstAttribute="leading" secondItem="AOg-GN-wdE" secondAttribute="leading" constant="8" id="NRl-dS-3C8"/>
+                                                <constraint firstItem="sgG-so-2KR" firstAttribute="top" secondItem="AOg-GN-wdE" secondAttribute="top" id="SDs-fL-DC7"/>
+                                                <constraint firstItem="AOg-GN-wdE" firstAttribute="bottom" secondItem="7Rf-kg-Zwf" secondAttribute="bottom" constant="8" id="TuM-Fp-aug"/>
+                                                <constraint firstItem="AOg-GN-wdE" firstAttribute="leading" secondItem="6kW-kI-wzX" secondAttribute="leading" constant="16" id="aBq-5k-6Tn"/>
+                                                <constraint firstItem="AOg-GN-wdE" firstAttribute="trailing" secondItem="sgG-so-2KR" secondAttribute="trailing" id="vky-GE-itX"/>
+                                                <constraint firstAttribute="trailing" secondItem="AOg-GN-wdE" secondAttribute="trailing" constant="16" id="vrH-ee-oHX"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <connections>
+                                            <outlet property="cellImage" destination="AOg-GN-wdE" id="2a7-TC-oFR"/>
+                                            <outlet property="dateLabel" destination="7Rf-kg-Zwf" id="0Yg-nB-dQa"/>
+                                            <outlet property="likeButton" destination="sgG-so-2KR" id="JJu-5o-3MP"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="7Xn-47-CIf"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="H5e-P7-UUf"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" name="YP Black (iOS)"/>
+                        <constraints>
+                            <constraint firstItem="WEg-ZF-es2" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="JHc-kO-8IR"/>
+                            <constraint firstItem="WEg-ZF-es2" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="SI5-bf-14X"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="WEg-ZF-es2" secondAttribute="trailing" id="gwV-Rh-QRQ"/>
+                            <constraint firstAttribute="bottom" secondItem="WEg-ZF-es2" secondAttribute="bottom" id="nUu-e1-gw7"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="WEg-ZF-es2" id="TLT-ez-l0O"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-124.42748091603053" y="3.5211267605633805"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="0" width="1600" height="1059"/>
+        <image name="likeButton" width="44" height="44"/>
+        <namedColor name="AccentColor">
+            <color red="0.0" green="0.46000000000000002" blue="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="YP Black (iOS)">
+            <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="YP White (iOS)">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+>>>>>>> sprint_08
 </document>
