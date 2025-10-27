@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		9F2408E32EABBFF500648A77 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F24089F2EABA72000648A77 /* WebKit.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		9F89F31B2E8FDD6C00281545 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9F24089F2EABA72000648A77 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		9F89F3042E8FDD6B00281545 /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F89F31A2E8FDD6C00281545 /* ImageFeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageFeedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F89F3242E8FDD6C00281545 /* ImageFeedUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageFeedUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -55,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9F2408E32EABBFF500648A77 /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,10 +81,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9F24089E2EABA72000648A77 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9F24089F2EABA72000648A77 /* WebKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		9F89F2FB2E8FDD6B00281545 = {
 			isa = PBXGroup;
 			children = (
 				9F89F3062E8FDD6B00281545 /* ImageFeed */,
+				9F24089E2EABA72000648A77 /* Frameworks */,
 				9F89F3052E8FDD6B00281545 /* Products */,
 			);
 			sourceTree = "<group>";
