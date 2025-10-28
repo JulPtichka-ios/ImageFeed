@@ -21,74 +21,85 @@ final class OAuth2Service {
 
     func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard let request = makeOAuthTokenRequest(code: code) else {
-            let error = NSError(
-                domain: "OAuth2Service",
+            handleFailure(
+                message: "Unable to construct OAuth token request",
                 code: -1,
-                userInfo: [NSLocalizedDescriptionKey: "Unable to construct OAuth token request"]
+                completion: completion
             )
-            print("[OAuth2Service]: Failed to create request")
-            DispatchQueue.main.async {
-                completion(.failure(error))
-            }
             return
         }
 
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             if let error = error {
-                print("[OAuth2Service]: Network error - \(error.localizedDescription)")
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                }
+                self?.handleFailure(
+                    message: "Network error - \(error.localizedDescription)",
+                    error: error,
+                    completion: completion
+                )
                 return
             }
+
             guard let httpResponse = response as? HTTPURLResponse else {
-                let error = NSError(
-                    domain: "OAuth2Service",
+                self?.handleFailure(
+                    message: "Invalid response type",
                     code: -2,
-                    userInfo: [NSLocalizedDescriptionKey: "Invalid response type"]
+                    completion: completion
                 )
-                print("[OAuth2Service]: Invalid response type")
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                }
                 return
             }
 
             guard (200 ... 299).contains(httpResponse.statusCode) else {
-                let error = NSError(
-                    domain: "OAuth2Service",
+                self?.handleFailure(
+                    message: "Server returned status code \(httpResponse.statusCode)",
                     code: httpResponse.statusCode,
-                    userInfo: [NSLocalizedDescriptionKey: "Server returned status code \(httpResponse.statusCode)"]
+                    completion: completion
                 )
-                print("[OAuth2Service]: Server error - status code \(httpResponse.statusCode)")
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                }
                 return
             }
+
             guard let data = data else {
-                let error = NSError(domain: "OAuth2Service", code: -3, userInfo: [NSLocalizedDescriptionKey: "No data received"])
-                print("[OAuth2Service]: No data received")
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                }
+                self?.handleFailure(
+                    message: "No data received",
+                    code: -3,
+                    completion: completion
+                )
                 return
             }
-            do {
-                let decoder = JSONDecoder()
-                let oAuthTokenData = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-                print("[OAuth2Service]: Successfully received token")
-                DispatchQueue.main.async {
-                    completion(.success(oAuthTokenData.accessToken))
-                }
-            } catch {
-                print("[OAuth2Service]: Decoding error - \(error.localizedDescription)")
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                }
-            }
+
+            self?.decodeToken(from: data, completion: completion)
         }
+
         task.resume()
+    }
+
+    private func handleFailure(
+        message: String,
+        code: Int = -999,
+        error: Error? = nil,
+        completion: @escaping (Result<String, Error>) -> Void
+    ) {
+        print("[OAuth2Service]: \(message)")
+        let nsError = error ?? NSError(domain: "OAuth2Service", code: code, userInfo: [NSLocalizedDescriptionKey: message])
+        DispatchQueue.main.async {
+            completion(.failure(nsError))
+        }
+    }
+
+    private func decodeToken(from data: Data, completion: @escaping (Result<String, Error>) -> Void) {
+        do {
+            let decoder = JSONDecoder()
+            let tokenResponse = try decoder.decode(OAuthTokenResponseBody.self, from: data)
+            print("[OAuth2Service]: Successfully received token")
+            DispatchQueue.main.async {
+                completion(.success(tokenResponse.accessToken))
+            }
+        } catch {
+            handleFailure(
+                message: "Decoding error - \(error.localizedDescription)",
+                error: error,
+                completion: completion
+            )
+        }
     }
 
     func makeOAuthTokenRequest(code: String) -> URLRequest? {

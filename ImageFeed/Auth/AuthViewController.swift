@@ -23,9 +23,6 @@ final class AuthViewController: UIViewController {
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        print("Segue ID: \(segue.identifier ?? "nil")")
-        print("Destination: \(type(of: segue.destination))")
-
         if segue.identifier == showWebViewSegueIdentifier {
             guard let webViewViewController = segue.destination as? WebViewViewController else {
                 assertionFailure("Failed to prepare for \(showWebViewSegueIdentifier)")
@@ -50,7 +47,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
         print("[AuthViewController]: Received authorization code")
 
         OAuth2Service.shared.fetchOAuthToken(code: code) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
             case let .success(token):
@@ -78,8 +75,8 @@ extension AuthViewController: WebViewViewControllerDelegate {
 
     private func showErrorAlert(error: Error) {
         let alert = UIAlertController(
-            title: "Что-то пошло не так(",
-            message: "Не удалось войти в систему. Ошибка: \(error.localizedDescription)",
+            title: Alerts.errorTitle,
+            message: "\(Alerts.authErrorPrefix)\(error.localizedDescription)",
             preferredStyle: .alert
         )
 
