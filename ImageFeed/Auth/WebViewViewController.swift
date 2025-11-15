@@ -28,16 +28,24 @@ final class WebViewViewController: UIViewController {
         super.viewDidLoad()
         webView.navigationDelegate = self
         loadAuthView()
+    }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         estimatedProgressObservation = webView.observe(
             \.estimatedProgress,
-            options: [.new]
-        ) { [weak self] _, _ in
-            guard let self = self else { return }
-            self.updateProgress()
-        }
+            options: [],
+            changeHandler: { [weak self] _, _ in
+                guard let self = self else { return }
+                self.updateProgress()
+            }
+        )
+        updateProgress()
+    }
 
-        progressView.progress = 0
+    private func updateProgress() {
+        progressView.progress = Float(webView.estimatedProgress)
+        progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
     }
 
     private func loadAuthView() {
@@ -58,16 +66,8 @@ final class WebViewViewController: UIViewController {
 
         let request = URLRequest(url: url)
         webView.load(request)
-    }
 
-    private func updateProgress() {
-        progressView.progress = Float(webView.estimatedProgress)
-        progressView.isHidden = abs(webView.estimatedProgress - Progress.completedValue) < Progress
-            .hideThreshold
-    }
-
-    deinit {
-        estimatedProgressObservation?.invalidate()
+        updateProgress()
     }
 }
 
