@@ -38,7 +38,6 @@ final class ProfileService {
     private let urlSession = URLSession.shared
     private(set) var profile: Profile?
 
-    // Основная функция получения профиля
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
         task?.cancel()
 
@@ -58,7 +57,6 @@ final class ProfileService {
                 return
             }
 
-            // Для дебага выводим raw JSON из сети
             if let jsonString = String(data: data, encoding: .utf8) {
                 print("Полученный JSON профиля: \(jsonString)")
             }
@@ -68,7 +66,6 @@ final class ProfileService {
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
                 let result = try decoder.decode(ProfileResult.self, from: data)
 
-                // Формируем полное имя с приоритетом поля name из JSON
                 let nameToShow: String
                 if let name = result.name, !name.isEmpty {
                     nameToShow = name
@@ -104,7 +101,6 @@ final class ProfileService {
         task.resume()
     }
 
-    // Создание URLRequest с токеном авторизации
     private func makeProfileRequest(token: String) -> URLRequest? {
         guard let url = URL(string: "https://api.unsplash.com/me") else {
             return nil
