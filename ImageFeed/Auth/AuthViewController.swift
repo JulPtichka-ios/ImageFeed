@@ -13,18 +13,22 @@ protocol AuthViewControllerDelegate: AnyObject {
 
 final class AuthViewController: UIViewController {
     private let showWebViewSegueIdentifier = "ShowWebView"
+    private let oauth2Service = OAuth2Service.shared
 
     weak var delegate: AuthViewControllerDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("AuthViewController loaded")
 
         configureBackButton()
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showWebViewSegueIdentifier {
-            guard let webViewViewController = segue.destination as? WebViewViewController else {
+            guard
+                let webViewViewController = segue.destination as? WebViewViewController
+            else {
                 assertionFailure("Failed to prepare for \(showWebViewSegueIdentifier)")
                 return
             }
@@ -44,27 +48,21 @@ final class AuthViewController: UIViewController {
 
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-        print("[AuthViewController]: Received authorization code")
+        vc.dismiss(animated: true)
 
-        OAuth2Service.shared.fetchOAuthToken(code: code) { [weak self] result in
+        UIBlockingProgressHUD.show()
+
+        fetchOAuthToken(code) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+
             guard let self else { return }
 
             switch result {
-            case let .success(token):
-                print("[AuthViewController]: Successfully received OAuth token")
-                let storage = OAuth2TokenStorage()
-                storage.token = token
-
-                DispatchQueue.main.async {
-                    self.delegate?.didAuthenticate(self)
-                }
-
+            case .success:
+                self.delegate?.didAuthenticate(self)
             case let .failure(error):
-                print("[AuthViewController]: Failed to get OAuth token - \(error.localizedDescription)")
-
-                DispatchQueue.main.async {
-                    self.showErrorAlert(error: error)
-                }
+                print("Ошибка при аутентификации: \(error.localizedDescription)")
+                self.showAuthErrorAlert()
             }
         }
     }
@@ -72,17 +70,29 @@ extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
         vc.dismiss(animated: true)
     }
+}
 
-    private func showErrorAlert(error: Error) {
-        let alert = UIAlertController(
-            title: Alerts.errorTitle,
-            message: "\(Alerts.authErrorPrefix)\(error.localizedDescription)",
+extension AuthViewController {
+    private func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
+        oauth2Service.fetchOAuthToken(code) { result in
+            completion(result)
+        }
+    }
+}
+
+extension AuthViewController {
+    func showAuthErrorAlert() {
+        let alertController = UIAlertController(
+            title: AuthStrings.Alert.errorTitle,
+            message: AuthStrings.Alert.errorMessage,
             preferredStyle: .alert
         )
-
-        let okAction = UIAlertAction(title: "OK", style: .default)
-        alert.addAction(okAction)
-
-        present(alert, animated: true)
+        let doneButton = UIAlertAction(
+            title: AuthStrings.Alert.okButton,
+            style: .default,
+            handler: nil
+        )
+        alertController.addAction(doneButton)
+        present(alertController, animated: true, completion: nil)
     }
 }
