@@ -45,7 +45,7 @@ final class OAuth2Service {
         let task = urlSession.dataTask(with: request) { [weak self] data, _, error in
             DispatchQueue.main.async {
                 guard let self = self else { return }
-                if let error = error {
+                if let error {
                     completion(.failure(error))
                     self.resetTask()
                     return
@@ -85,16 +85,16 @@ final class OAuth2Service {
         task = nil
         lastCode = nil
     }
-
+  
     private func makeOAuthTokenRequest(code: String) -> URLRequest? {
-        guard let url = URL(string: "https://unsplash.com/oauth/token") else {
-            assertionFailure("Failed to create URL")
+        guard let url = URL(string: Constants.unsplashTokenURLString) else {
+            print("Failed to create URL")
             return nil
         }
-
+        
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-
+        
         let params: [String: String] = [
             "client_id": Constants.accessKey,
             "client_secret": Constants.secretKey,
@@ -108,40 +108,5 @@ final class OAuth2Service {
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
 
         return request
-    }
-
-    private struct OAuthTokenResponseBody: Codable {
-        let accessToken: String?
-        let tokenType: String?
-        let refreshToken: String?
-        let scope: String?
-        let createdAt: Int?
-        let userId: Int?
-        let username: String?
-    }
-}
-
-// MARK: - Network Client
-
-extension OAuth2Service {
-    private func object(
-        for request: URLRequest,
-        completion: @escaping (Result<OAuthTokenResponseBody, Error>) -> Void
-    ) -> URLSessionTask {
-        let decoder = JSONDecoder()
-        return urlSession.data(for: request) { (result: Result<Data, Error>) in
-            switch result {
-            case let .success(data):
-                do {
-                    let body = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-                    completion(.success(body))
-                } catch {
-                    completion(.failure(NetworkError.decodingError(error)))
-                }
-
-            case let .failure(error):
-                completion(.failure(error))
-            }
-        }
     }
 }

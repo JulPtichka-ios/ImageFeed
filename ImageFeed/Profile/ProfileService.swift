@@ -7,29 +7,6 @@
 
 import Foundation
 
-struct Profile {
-    let username: String
-    let name: String
-    let loginName: String
-    let bio: String?
-}
-
-struct ProfileResult: Codable {
-    let username: String?
-    let name: String?
-    let firstName: String?
-    let lastName: String?
-    let bio: String?
-
-    private enum CodingKeys: String, CodingKey {
-        case username
-        case name
-        case firstName = "first_name"
-        case lastName = "last_name"
-        case bio
-    }
-}
-
 final class ProfileService {
     static let shared = ProfileService()
     private init() { }
@@ -62,33 +39,14 @@ final class ProfileService {
             }
 
             do {
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let result = try decoder.decode(ProfileResult.self, from: data)
-
-                let nameToShow: String
-                if let name = result.name, !name.isEmpty {
-                    nameToShow = name
+                let profile = try self?.createProfile(from: data)
+                if let profile = profile {
+                    self?.profile = profile
+                    DispatchQueue.main.async {
+                        completion(.success(profile))
+                    }
                 } else {
-                    let fullName = [result.firstName, result.lastName]
-                        .compactMap { $0 }
-                        .joined(separator: " ")
-                    nameToShow = fullName.isEmpty ? "Имя не указано" : fullName
-                }
-
-                let username = result.username ?? ""
-
-                let profile = Profile(
-                    username: username,
-                    name: nameToShow,
-                    loginName: username.isEmpty ? "@неизвестный_пользователь" : "@\(username)",
-                    bio: result.bio
-                )
-
-                self?.profile = profile
-
-                DispatchQueue.main.async {
-                    completion(.success(profile))
+                    throw URLError(.badServerResponse)
                 }
             } catch {
                 print("[fetchProfile]: Ошибка декодирования: \(error)")
@@ -101,8 +59,33 @@ final class ProfileService {
         task.resume()
     }
 
+    private func createProfile(from data: Data) throws -> Profile {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let result = try decoder.decode(ProfileResult.self, from: data)
+
+        let nameToShow: String
+        if let name = result.name, !name.isEmpty {
+            nameToShow = name
+        } else {
+            let fullName = [result.firstName, result.lastName]
+                .compactMap { $0 }
+                .joined(separator: " ")
+            nameToShow = fullName.isEmpty ? "Имя не указано" : fullName
+        }
+
+        let username = result.username ?? ""
+        return Profile(
+            username: username,
+            name: nameToShow,
+            loginName: username.isEmpty ? "@неизвестный_пользователь" : "@\(username)",
+            bio: result.bio
+        )
+    }
+
     private func makeProfileRequest(token: String) -> URLRequest? {
-        guard let url = URL(string: "https://api.unsplash.com/me") else {
+        guard let url = URL(string: Constants.unsplashProfileURLString) else {
+            print("Failed to create profile URL")
             return nil
         }
         var request = URLRequest(url: url)

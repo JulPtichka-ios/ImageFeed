@@ -1,0 +1,16 @@
+//
+//  AuthStrings.swift
+//  ImageFeed
+//
+//  Created by Julia Ios on 27.11.2025.
+//
+
+import UIKit
+
+struct AuthStrings {
+    struct Alert {
+        static let errorTitle = "Что-то пошло не так"
+        static let errorMessage = "Не удалось войти в систему"
+        static let okButton = "Ок"
+    }
+}
