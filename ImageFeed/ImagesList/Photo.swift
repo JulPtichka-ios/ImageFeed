@@ -56,7 +56,7 @@ extension Photo {
         self.welcomeDescription = result.description
         self.thumbImageURL = result.urls.thumb
         self.largeImageURL = result.urls.regular
-        self.fullImageURL = result.urls.full      // ← добавили
+        self.fullImageURL = result.urls.full
         self.isLiked = result.likedByUser ?? false
     }
 }

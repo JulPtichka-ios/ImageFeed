@@ -36,7 +36,6 @@ final class SingleImageViewController: UIViewController {
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 3.0
 
-        // Сохраняем пропорции, заполняем с обрезкой
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
 

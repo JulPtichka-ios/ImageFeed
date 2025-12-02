@@ -20,7 +20,7 @@ final class ImagesListService {
     
     func fetchPhotosNextPage() {
         assert(Thread.isMainThread)
-        guard OAuth2TokenStorage.shared.token != nil else {
+                guard OAuth2TokenStorage.shared.token != nil else {
             print("❌ fetchPhotosNextPage: Требуется авторизация")
             return
         }
