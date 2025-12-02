@@ -44,6 +44,19 @@ final class AuthViewController: UIViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationItem.backBarButtonItem?.tintColor = UIColor(named: "ypBlack")
     }
+
+    private func switchToMainScreen() {
+        DispatchQueue.main.async {
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                  let sceneDelegate = windowScene.delegate as? SceneDelegate,
+                  let window = sceneDelegate.window else { return }
+
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let mainVC = storyboard.instantiateViewController(withIdentifier: "TabBarViewController")
+            window.rootViewController = mainVC
+            window.makeKeyAndVisible()
+        }
+    }
 }
 
 extension AuthViewController: WebViewViewControllerDelegate {
@@ -60,6 +73,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
             switch result {
             case .success:
                 self.delegate?.didAuthenticate(self)
+                self.switchToMainScreen()
             case let .failure(error):
                 print("Ошибка при аутентификации: \(error.localizedDescription)")
                 self.showAuthErrorAlert()

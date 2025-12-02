@@ -71,6 +71,8 @@ final class ProfileViewController: UIViewController {
         applyConstraints()
         updateProfile()
 
+        logoutButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
+
         profileImageServiceObserver = NotificationCenter.default.addObserver(
             forName: ProfileImageService.didChangeNotification,
             object: nil,
@@ -88,7 +90,26 @@ final class ProfileViewController: UIViewController {
             NotificationCenter.default.removeObserver(observer)
         }
     }
-
+    
+    @objc private func didTapLogoutButton() {
+        let alert = UIAlertController(
+            title: "Пока, пока!",
+            message: "Уверены, что хотите выйти?",
+            preferredStyle: .alert
+        )
+        let logoutAction = UIAlertAction(title: "Да", style: .default) { _ in
+            ProfileLogoutService.shared.logout()
+        }
+        logoutAction.setValue(UIColor.systemBlue, forKey: "titleTextColor")
+        let cancelAction = UIAlertAction(title: "Нет", style: .cancel)
+        cancelAction.setValue(UIColor.systemBlue, forKey: "titleTextColor")
+        
+        alert.addAction(logoutAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true)
+    }
+    
     private func updateAvatar() {
         guard
             let profileImageURL = ProfileImageService.shared.avatarURL,
