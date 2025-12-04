@@ -45,16 +45,16 @@
                                                     <color key="textColor" name="YP White (iOS)"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sgG-so-2KR" userLabel="likeButton">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sgG-so-2KR" userLabel="likeActiveButton">
                                                     <rect key="frame" x="333" y="4" width="44" height="44"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="44" id="JKm-lD-Tl5"/>
                                                         <constraint firstAttribute="width" constant="44" id="bXk-tT-du2"/>
                                                     </constraints>
                                                     <state key="normal" title="Button"/>
-                                                    <buttonConfiguration key="configuration" style="plain" image="likeButton"/>
+                                                    <buttonConfiguration key="configuration" style="plain" image="likeActiveButton"/>
                                                     <connections>
-                                                        <action selector="likeButtonClicked:" destination="ZDQ-xS-QHV" eventType="touchUpInside" id="tXI-rB-IJe"/>
+                                                        <action selector="likeActiveButtonClicked:" destination="ZDQ-xS-QHV" eventType="touchUpInside" id="9EQ-mv-no8"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
@@ -75,7 +75,7 @@
                                         <connections>
                                             <outlet property="cellImage" destination="AOg-GN-wdE" id="2a7-TC-oFR"/>
                                             <outlet property="dateLabel" destination="7Rf-kg-Zwf" id="0Yg-nB-dQa"/>
-                                            <outlet property="likeButton" destination="sgG-so-2KR" id="JJu-5o-3MP"/>
+                                            <outlet property="likeActiveButton" destination="sgG-so-2KR" id="PSj-GI-4nm"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -314,7 +314,7 @@
     <resources>
         <image name="0" width="1600" height="1059"/>
         <image name="auth_screen_logo" width="60" height="60"/>
-        <image name="likeButton" width="44" height="44"/>
+        <image name="likeActiveButton" width="44" height="44"/>
         <image name="nav_back_button_white" width="24" height="24"/>
         <image name="share_button" width="50" height="50"/>
         <image name="tab_editorial_active" width="50" height="32.666667938232422"/>

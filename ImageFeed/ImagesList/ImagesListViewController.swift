@@ -31,7 +31,6 @@ final class ImagesListViewController: UIViewController, ImagesListCellDelegate {
         }
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.rowHeight = 200
         
         photosObserver = NotificationCenter.default.addObserver(
             forName: ImagesListService.didChangeNotification,
@@ -118,7 +117,7 @@ final class ImagesListViewController: UIViewController, ImagesListCellDelegate {
 
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return photos.count
+        photos.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

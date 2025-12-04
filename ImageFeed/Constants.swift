@@ -31,3 +31,11 @@ enum Alerts {
     static let authErrorPrefix = "Не удалось войти в систему. Ошибка: "
     static let okButtonTitle = "OK"
 }
+
+// MARK: - HTTPMethod
+enum HTTPMethod: String {
+    case get = "GET"
+    case post = "POST"
+    case put = "PUT"
+    case delete = "DELETE"
+}

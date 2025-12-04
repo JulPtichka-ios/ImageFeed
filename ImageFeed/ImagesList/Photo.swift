@@ -3,7 +3,6 @@
 //  ImageFeed
 //
 
-import Foundation
 import UIKit
 
 extension DateFormatter {

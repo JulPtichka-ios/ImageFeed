@@ -20,15 +20,12 @@ final class AuthViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print("AuthViewController loaded")
-
         configureBackButton()
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showWebViewSegueIdentifier {
-            guard
-                let webViewViewController = segue.destination as? WebViewViewController
-            else {
+            guard let webViewViewController = segue.destination as? WebViewViewController else {
                 assertionFailure("Failed to prepare for \(showWebViewSegueIdentifier)")
                 return
             }
@@ -71,11 +68,13 @@ extension AuthViewController: WebViewViewControllerDelegate {
             guard let self else { return }
 
             switch result {
-            case .success:
+            case .success(let token):
+                print("✅ [AuthVC]: Токен получен: \(token.prefix(20))...")
+                OAuth2TokenStorage.shared.token = token
                 self.delegate?.didAuthenticate(self)
                 self.switchToMainScreen()
             case let .failure(error):
-                print("Ошибка при аутентификации: \(error.localizedDescription)")
+                print("❌ [AuthVC]: Ошибка авторизации: \(error.localizedDescription)")
                 self.showAuthErrorAlert()
             }
         }

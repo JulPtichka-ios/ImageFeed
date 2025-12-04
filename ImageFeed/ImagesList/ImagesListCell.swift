@@ -13,7 +13,7 @@ final class ImagesListCell: UITableViewCell {
     
     @IBOutlet weak var cellImage: UIImageView!
     @IBOutlet weak var dateLabel: UILabel!
-    @IBOutlet weak var likeButton: UIButton!
+    @IBOutlet weak var likeActiveButton: UIButton!
 
     weak var delegate: ImagesListCellDelegate?
 
@@ -24,15 +24,15 @@ final class ImagesListCell: UITableViewCell {
         cellImage.kf.indicatorType = .none
     }
 
-    @IBAction func likeButtonClicked(_ sender: UIButton) {
+    @IBAction private func likeActiveButtonClicked(_ sender: UIButton) {
         print("🔥 LIKE BUTTON TAPED!")
         delegate?.photosListCellDidTapLike(self)
     }
     
     func setIsLiked(_ isLiked: Bool) {
-        let imageName = isLiked ? "likeButton" : "likeButtonOff"
+        let imageName = isLiked ? "likeActiveButton" : "likeUnaktiveButton"
         let image = UIImage(named: imageName)
         print("🔥 \(imageName): \(image != nil ? "✅ OK" : "❌ NOT FOUND")")
-        likeButton.setImage(image, for: .normal)
+        likeActiveButton.setImage(image, for: .normal)
     }
 }
