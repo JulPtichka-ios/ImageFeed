@@ -62,7 +62,7 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print(">>> ProfileViewController загружен!")
-        view.backgroundColor = UIColor(named: "YP Black") ?? .black
+        view.backgroundColor = UIColor(named: "YP Black (iOS)")
 
         [avatarImageView, nameLabel, usernameLabel, descriptionLabel, logoutProfileButton].forEach {
             view.addSubview($0)
