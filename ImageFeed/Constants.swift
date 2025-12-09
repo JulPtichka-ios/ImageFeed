@@ -16,6 +16,7 @@ enum Constants {
     static let defaultBaseURL = URL(string: "https://api.unsplash.com")!
     static let unsplashTokenURLString = "https://unsplash.com/oauth/token"
     static let unsplashProfileURLString = "https://api.unsplash.com/me"
+    static let unsplashPhotosURLString = "https://api.unsplash.com/photos"
 }
 
 // MARK: - Progress
@@ -29,4 +30,12 @@ enum Alerts {
     static let errorTitle = "Что-то пошло не так("
     static let authErrorPrefix = "Не удалось войти в систему. Ошибка: "
     static let okButtonTitle = "OK"
+}
+
+// MARK: - HTTPMethod
+enum HTTPMethod: String {
+    case get = "GET"
+    case post = "POST"
+    case put = "PUT"
+    case delete = "DELETE"
 }

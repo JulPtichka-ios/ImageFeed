@@ -49,9 +49,9 @@ final class ProfileViewController: UIViewController {
         return label
     }()
 
-    private let logoutButton: UIButton = {
+    private let logoutProfileButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(named: "logoutButton"), for: .normal)
+        button.setImage(UIImage(named: "logoutProfileButton"), for: .normal)
         button.tintColor = UIColor(named: "YP Red") ?? .systemRed
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -62,14 +62,16 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print(">>> ProfileViewController загружен!")
-        view.backgroundColor = UIColor(named: "YP Black") ?? .black
+        view.backgroundColor = UIColor(named: "YP Black (iOS)")
 
-        [avatarImageView, nameLabel, usernameLabel, descriptionLabel, logoutButton].forEach {
+        [avatarImageView, nameLabel, usernameLabel, descriptionLabel, logoutProfileButton].forEach {
             view.addSubview($0)
         }
 
         applyConstraints()
         updateProfile()
+
+        logoutProfileButton.addTarget(self, action: #selector(didTaplogoutProfileButton), for: .touchUpInside)
 
         profileImageServiceObserver = NotificationCenter.default.addObserver(
             forName: ProfileImageService.didChangeNotification,
@@ -88,7 +90,26 @@ final class ProfileViewController: UIViewController {
             NotificationCenter.default.removeObserver(observer)
         }
     }
-
+    
+    @objc private func didTaplogoutProfileButton() {
+        let alert = UIAlertController(
+            title: "Пока, пока!",
+            message: "Уверены, что хотите выйти?",
+            preferredStyle: .alert
+        )
+        let logoutAction = UIAlertAction(title: "Да", style: .default) { _ in
+            ProfileLogoutService.shared.logout()
+        }
+        logoutAction.setValue(UIColor.systemBlue, forKey: "titleTextColor")
+        let cancelAction = UIAlertAction(title: "Нет", style: .cancel)
+        cancelAction.setValue(UIColor.systemBlue, forKey: "titleTextColor")
+        
+        alert.addAction(logoutAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true)
+    }
+    
     private func updateAvatar() {
         guard
             let profileImageURL = ProfileImageService.shared.avatarURL,
@@ -140,10 +161,10 @@ final class ProfileViewController: UIViewController {
             descriptionLabel.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 8),
             descriptionLabel.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor),
 
-            logoutButton.centerYAnchor.constraint(equalTo: avatarImageView.centerYAnchor),
-            logoutButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            logoutButton.widthAnchor.constraint(equalToConstant: 44),
-            logoutButton.heightAnchor.constraint(equalToConstant: 44)
+            logoutProfileButton.centerYAnchor.constraint(equalTo: avatarImageView.centerYAnchor),
+            logoutProfileButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            logoutProfileButton.widthAnchor.constraint(equalToConstant: 44),
+            logoutProfileButton.heightAnchor.constraint(equalToConstant: 44)
         ])
     }
 

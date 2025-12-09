@@ -13,6 +13,9 @@ enum NetworkError: Error {
     case urlSessionError
     case invalidRequest
     case decodingError(Error)
+    case urlCreationError
+    case invalidResponse
+    case invalidToken
 }
 
 extension URLSession {
