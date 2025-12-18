@@ -7,18 +7,6 @@
 
 import UIKit
 
-// MARK: - OAuth
-enum Constants {
-    static let accessKey = "4aHjhhCclbd47ZcqBJ4qvudEBfCY95gLocwXNITtkmM"
-    static let secretKey = "YPo1nAnYuIoniFxsRhTNzeKXWy6ksdXmsraHWIgi8Go"
-    static let redirectURI = "urn:ietf:wg:oauth:2.0:oob"
-    static let accessScope = "public+read_user+write_likes"
-    static let defaultBaseURL = URL(string: "https://api.unsplash.com")!
-    static let unsplashTokenURLString = "https://unsplash.com/oauth/token"
-    static let unsplashProfileURLString = "https://api.unsplash.com/me"
-    static let unsplashPhotosURLString = "https://api.unsplash.com/photos"
-}
-
 // MARK: - Progress
 enum Progress {
     static let completedValue: Double = 1.0
@@ -38,4 +26,15 @@ enum HTTPMethod: String {
     case post = "POST"
     case put = "PUT"
     case delete = "DELETE"
+}
+
+//  MARK: - WebViewConstants
+enum WebViewConstants {
+    static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
+    static let clientIDQueryName = "client_id"
+    static let redirectURIQueryName = "redirect_uri"
+    static let responseTypeQueryName = "response_type"
+    static let scopeQueryName = "scope"
+    static let responseTypeCode = "code"
+    static let authorizeNativePath = "/oauth/authorize/native"
 }

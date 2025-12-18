@@ -31,7 +31,8 @@ final class SingleImageViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        backButton.accessibilityIdentifier = "backButton"
+        
         scrollView.delegate = self
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 3.0
@@ -53,6 +54,7 @@ final class SingleImageViewController: UIViewController {
     }
 
     // MARK: - Actions
+    @IBOutlet private weak var backButton: UIButton!
 
     @IBAction private func didTapBackButton() {
         dismiss(animated: true, completion: nil)
