@@ -5,14 +5,20 @@
 //  Created by Воробьева Юлия on 09.10.2025.
 //
 
-import Kingfisher
 import UIKit
+import Kingfisher
 
-final class ProfileViewController: UIViewController {
-    private let profileService = ProfileService.shared
-
-    private var profile: Profile?
-
+final class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
+    
+    // MARK: - Dependencies
+    private var presenter: ProfilePresenterProtocol!
+    
+    func configure(_ presenter: ProfilePresenterProtocol) {
+        self.presenter = presenter
+        presenter.view = self
+    }
+    
+    // MARK: - UI
     private let avatarImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "avatar")
@@ -21,7 +27,7 @@ final class ProfileViewController: UIViewController {
         imageView.clipsToBounds = true
         return imageView
     }()
-
+    
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.text = "Екатерина Новикова"
@@ -30,7 +36,7 @@ final class ProfileViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-
+    
     private let usernameLabel: UILabel = {
         let label = UILabel()
         label.text = "@ekaterina_nov"
@@ -39,7 +45,7 @@ final class ProfileViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-
+    
     private let descriptionLabel: UILabel = {
         let label = UILabel()
         label.text = "Hello, world!"
@@ -48,7 +54,7 @@ final class ProfileViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-
+    
     private let logoutProfileButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "logoutProfileButton"), for: .normal)
@@ -56,78 +62,86 @@ final class ProfileViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-
+    
     private var profileImageServiceObserver: NSObjectProtocol?
-
+    
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         print(">>> ProfileViewController загружен!")
         view.backgroundColor = UIColor(named: "YP Black (iOS)")
-
+        nameLabel.accessibilityIdentifier = "profileNameLabel"
+        usernameLabel.accessibilityIdentifier = "profileLoginLabel"
+        logoutProfileButton.accessibilityIdentifier = "logoutButton"
+        
         [avatarImageView, nameLabel, usernameLabel, descriptionLabel, logoutProfileButton].forEach {
             view.addSubview($0)
         }
-
+        
         applyConstraints()
-        updateProfile()
-
-        logoutProfileButton.addTarget(self, action: #selector(didTaplogoutProfileButton), for: .touchUpInside)
-
+        
+        if presenter == nil {
+            let presenter = ProfilePresenter()
+            configure(presenter)
+        }
+        
+        logoutProfileButton.addTarget(
+            self,
+            action: #selector(didTaplogoutProfileButton),
+            for: .touchUpInside
+        )
+        
         profileImageServiceObserver = NotificationCenter.default.addObserver(
             forName: ProfileImageService.didChangeNotification,
             object: nil,
             queue: .main,
             using: { [weak self] _ in
-                self?.updateAvatar()
+                self?.presenter.viewDidLoad()
             }
         )
-
-        updateAvatar()
+        
+        presenter.viewDidLoad()
     }
-
+    
     deinit {
         if let observer = profileImageServiceObserver {
             NotificationCenter.default.removeObserver(observer)
         }
     }
     
-    @objc private func didTaplogoutProfileButton() {
-        let alert = UIAlertController(
-            title: "Пока, пока!",
-            message: "Уверены, что хотите выйти?",
-            preferredStyle: .alert
-        )
-        let logoutAction = UIAlertAction(title: "Да", style: .default) { _ in
-            ProfileLogoutService.shared.logout()
-        }
-        logoutAction.setValue(UIColor.systemBlue, forKey: "titleTextColor")
-        let cancelAction = UIAlertAction(title: "Нет", style: .cancel)
-        cancelAction.setValue(UIColor.systemBlue, forKey: "titleTextColor")
-        
-        alert.addAction(logoutAction)
-        alert.addAction(cancelAction)
-        
-        present(alert, animated: true)
+    // MARK: - Actions
+    @objc func didTaplogoutProfileButton() {
+        presenter.didTapLogout()
     }
     
-    private func updateAvatar() {
-        guard
-            let profileImageURL = ProfileImageService.shared.avatarURL,
-            let imageUrl = URL(string: profileImageURL)
-        else {
+    // MARK: - ProfileViewControllerProtocol
+    func updateProfileDetails(name: String, login: String, bio: String?) {
+        nameLabel.text = name.isEmpty ? "Имя не указано" : name
+        usernameLabel.text = login.isEmpty ? "@неизвестный_пользователь" : login
+        descriptionLabel.text = (bio?.isEmpty ?? true) ? "Профиль не заполнен" : bio
+    }
+    
+    func updateAvatar(url: URL?) {
+        guard let url else {
             avatarImageView.image = UIImage(systemName: "person.circle.fill")
             return
         }
-
+        
         let placeholderImage = UIImage(systemName: "person.circle.fill")?
             .withTintColor(.lightGray, renderingMode: .alwaysOriginal)
-            .withConfiguration(UIImage.SymbolConfiguration(pointSize: 70, weight: .regular, scale: .large))
-
+            .withConfiguration(
+                UIImage.SymbolConfiguration(
+                    pointSize: 70,
+                    weight: .regular,
+                    scale: .large
+                )
+            )
+        
         let processor = RoundCornerImageProcessor(cornerRadius: 35)
-
+        
         avatarImageView.kf.indicatorType = .activity
         avatarImageView.kf.setImage(
-            with: imageUrl,
+            with: url,
             placeholder: placeholderImage,
             options: [
                 .processor(processor),
@@ -144,51 +158,41 @@ final class ProfileViewController: UIViewController {
             }
         }
     }
-
+    
+    func showLogoutAlert() {
+        let alert = UIAlertController(
+            title: "Пока, пока!",
+            message: "Уверены, что хотите выйти?",
+            preferredStyle: .alert
+        )
+        let logoutAction = UIAlertAction(title: "Да", style: .default) { _ in
+            ProfileLogoutService.shared.logout()
+        }
+        let cancelAction = UIAlertAction(title: "Нет", style: .cancel)
+        
+        alert.addAction(logoutAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true)
+    }
+    
+    // MARK: - Layout
     private func applyConstraints() {
         NSLayoutConstraint.activate([
             avatarImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
             avatarImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             avatarImageView.widthAnchor.constraint(equalToConstant: 70),
             avatarImageView.heightAnchor.constraint(equalToConstant: 70),
-
             nameLabel.topAnchor.constraint(equalTo: avatarImageView.bottomAnchor, constant: 8),
             nameLabel.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor),
-
             usernameLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
             usernameLabel.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor),
-
             descriptionLabel.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 8),
             descriptionLabel.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor),
-
             logoutProfileButton.centerYAnchor.constraint(equalTo: avatarImageView.centerYAnchor),
             logoutProfileButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             logoutProfileButton.widthAnchor.constraint(equalToConstant: 44),
             logoutProfileButton.heightAnchor.constraint(equalToConstant: 44)
         ])
-    }
-
-    private func updateProfileDetails(profile: Profile) {
-        nameLabel.text = profile.name.isEmpty ? "Имя не указано" : profile.name
-        usernameLabel.text = profile.username.isEmpty ? "@неизвестный_пользователь" : profile.loginName
-        descriptionLabel.text = (profile.bio?.isEmpty ?? true) ? "Профиль не заполнен" : profile.bio
-    }
-
-    private func updateProfile() {
-        guard let token = OAuth2TokenStorage.shared.token else { return }
-
-        profileService.fetchProfile(token) { [weak self] result in
-            guard let self = self else { return }
-
-            switch result {
-            case let .success(profile):
-                DispatchQueue.main.async {
-                    self.profile = profile
-                    self.updateProfileDetails(profile: profile)
-                }
-            case let .failure(error):
-                print("Не удалось получить профиль:", error)
-            }
-        }
     }
 }

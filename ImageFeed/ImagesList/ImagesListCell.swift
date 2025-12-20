@@ -1,8 +1,8 @@
 //
-//  ImagesListViewController.swift
-//  ImageFeed
+// ImagesListCell.swift
+// ImageFeed
 //
-//  Created by Воробьева Юлия on 06.10.2025.
+// Created by Воробьева Юлия on 06.10.2025.
 //
 
 import UIKit
@@ -26,7 +26,6 @@ final class ImagesListCell: UITableViewCell {
     
     @IBAction private func likeActiveButtonClicked(_ sender: UIButton) {
         print("🔥 LIKE BUTTON TAPED!")
-        likeActiveButton.isEnabled = false
         delegate?.photosListCellDidTapLike(self)
     }
     
@@ -34,7 +33,14 @@ final class ImagesListCell: UITableViewCell {
         let imageName = isLiked ? "likeActiveButton" : "likeUnaktiveButton"
         let image = UIImage(named: imageName)
         print("🔥 \(imageName): \(image != nil ? "✅ OK" : "❌ NOT FOUND")")
+        
         likeActiveButton.setImage(image, for: .normal)
+        likeActiveButton.accessibilityIdentifier = "like button"
         likeActiveButton.isEnabled = true
+    }
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        likeActiveButton.accessibilityIdentifier = "like button"
     }
 }
